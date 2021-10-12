@@ -1,0 +1,12 @@
+{
+  "name": "jam",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/nocrusts/jam.git",
+  "author": "b0kch01 <nath49ers@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.1.2",
+    "parcel": "^2.0.0-rc.0"
+  }
+}
