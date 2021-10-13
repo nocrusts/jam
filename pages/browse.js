@@ -1,8 +1,8 @@
-const Account = () => {
+const Browse = () => {
     return (
         <div className="page">
             <div className="container">
-                <h1>Account</h1>
+                <h1>Browse</h1>
                 <hr />
 
             </div>
@@ -10,4 +10,4 @@ const Account = () => {
     );
 }
 
-export default Account;
+export default Browse;

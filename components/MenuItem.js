@@ -7,14 +7,11 @@ import styles from "../styles/MenuItem.module.css";
 const MenuItem = (params) => {
 
     const router = useRouter();
+    const selectedClass = router.pathname == params.href ? styles.active : "";
 
     return (
         <Link href={params.href}>
-            <a
-                className={
-                    (router.pathname == params.href ? styles.active : "") + " " + styles.menuItem
-                }
-            >
+            <a className={selectedClass + " " + styles.menuItem}>
                 {params.title}
             </a>
         </Link>

@@ -1,5 +1,6 @@
 import styles from "../styles/Sidebar.module.css";
 import MenuItem from "./MenuItem";
+import MusicPlayer from "./MusicPlayer";
 import SearchBar from "./Searchbar";
 
 const Sidebar = ({ children }) => {
@@ -11,8 +12,8 @@ const Sidebar = ({ children }) => {
                 <SearchBar placeholder="Search" />
 
                 <MenuItem title="Home" href="/" />
-                <MenuItem title="Browse" href="/about" />
-                <MenuItem title="Account" href="/account" />
+                <MenuItem title="Browse" href="/browse" />
+                <MenuItem title="Library" href="/library" />
             </div>
             <div className={styles.content}>
                 <nav></nav>
@@ -20,6 +21,7 @@ const Sidebar = ({ children }) => {
                     {children}
                 </div>
             </div>
+            <MusicPlayer />
         </div>
     );
 }

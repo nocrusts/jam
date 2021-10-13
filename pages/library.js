@@ -1,8 +1,8 @@
-const About = () => {
+const Library = () => {
     return (
         <div className="page">
             <div className="container">
-                <h1>About</h1>
+                <h1>Library</h1>
                 <hr />
 
             </div>
@@ -10,4 +10,4 @@ const About = () => {
     );
 }
 
-export default About;
+export default Library;
