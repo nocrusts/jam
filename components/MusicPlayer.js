@@ -5,16 +5,21 @@ import { faCirclePlay, faCirclePause } from "@fortawesome/free-solid-svg-icons";
 import ReactPlayer from "react-player/youtube";
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const MusicPlayer = () => {
 
     const [url, setUrl] = useState("https://www.youtube.com/watch?v=tOZkYsrX8JI");
     const [playing, setPlay] = useState(false);
+    const [played, setPlayed] = useState(0);
     const [volume, setVolume] = useState(0);
+    const [seeking, setSeeking] = useState(false);
+
     const [title, setTitle] = useState("Nothing Playing");
     const [thumbnail, setThumbnail] = useState("/stock.png");
     const [artist, setArtist] = useState("Unknown");
+
+    const ref = useRef(null);
 
     useEffect(() => {
         // States read values aren't updated here...(workaround)
@@ -39,6 +44,25 @@ const MusicPlayer = () => {
         });
     }, []);
 
+    function handleSeekMouseDown() {
+        setSeeking(true);
+    }
+
+    function handleSeekChange(e) {
+        setPlayed(parseFloat(e.target.value));
+    }
+
+    function handleSeekMouseUp(e) {
+        setSeeking(false);
+        ref.current.seekTo(parseFloat(e.target.value));
+    }
+
+    function handleProgress(state) {
+        if (!seeking) {
+            setPlayed(state.played);
+        }
+    }
+
     function getVideoDetails() {
         fetch(`https://www.youtube.com/oembed?url=${url}&format=json`)
             .then(res => res.json())
@@ -46,7 +70,7 @@ const MusicPlayer = () => {
                 setTitle(json.title);
                 setThumbnail(json.thumbnail_url);
                 setArtist(json.author_name);
-            })
+            });
     }
 
     return (
@@ -61,14 +85,23 @@ const MusicPlayer = () => {
             </div>
 
             <div className={styles.controls}>
-                <button className={styles.playPause} onClick={function () { setPlay(!playing) }}>
+                <button
+                    className={styles.playPause}
+                    onClick={function () { setPlay(!playing) }}
+                >
                     <FontAwesomeIcon
-                        icon={
-                            playing ? faCirclePause : faCirclePlay
-                        }
+                        icon={playing ? faCirclePause : faCirclePlay}
                         size="2x"
                     />
                 </button>
+                <input
+                    className={styles.seek}
+                    type='range' min={0} max={0.999999} step='any'
+                    value={played}
+                    onMouseDown={handleSeekMouseDown}
+                    onChange={handleSeekChange}
+                    onMouseUp={handleSeekMouseUp}
+                />
             </div>
 
             <div className={styles.right}>
@@ -77,6 +110,7 @@ const MusicPlayer = () => {
 
             <div className={styles.backend}>
                 <ReactPlayer
+                    ref={ref}
                     url={url}
                     playing={playing}
                     controls={false}
@@ -84,6 +118,7 @@ const MusicPlayer = () => {
                     pip={false}
                     volume={volume}
                     onReady={getVideoDetails}
+                    onProgress={handleProgress}
                 />
             </div>
         </div >

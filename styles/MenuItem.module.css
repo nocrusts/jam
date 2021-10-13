@@ -15,5 +15,5 @@
 
 .menuItem.active {
     transition: 0s;
-    background: rgba(78, 96, 255, 0.452);
+    background: rgba(var(--accent), 0.452);
 }

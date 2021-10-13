@@ -1,12 +1,12 @@
 .player {
     display:flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
     position: fixed;
     bottom: 0;
     width: 100vw;
     height: 120px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
     z-index: 5;
     font-size: 12px;
     background: rgba(0, 0, 0, 0.877);
@@ -44,9 +44,29 @@
 
 .controls {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex: 1;
+    flex: 2;
+}
+
+.seek {
+    width: 100%;
+    margin: 20px 0;
+    -webkit-appearance: none;
+    height: 5px;
+    background-color: #ffffff3b;
+    border-radius: 2.5px;
+    cursor: pointer;
+}
+
+.seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgb(var(--accent));
+    border-left: 2px solid rgb(var(--accent));
 }
 
 .playPause {
@@ -56,6 +76,7 @@
     border: 0;
     transform: scale(1.2);
     transition: 0.05s ease;
+    cursor: pointer;
 }
 
 .playPause:hover {
