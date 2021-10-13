@@ -1,0 +1,19 @@
+.menuItem {
+    display: inline-block;
+    padding: 10px;
+    width: 100%;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.menuItem:hover {
+    transition: background .2s;
+    background:rgba(255, 255, 255, 0.055)
+}
+
+.menuItem.active {
+    transition: 0s;
+    background: rgba(78, 96, 255, 0.452);
+}

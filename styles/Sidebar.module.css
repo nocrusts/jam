@@ -1,0 +1,23 @@
+.main {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: row;
+}
+
+.scrollable {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    padding: 20px;
+    z-index: 2;
+    border-right: 1px rgba(255,255,255,0.1) solid;
+    background: #00000093;
+}
+
+.content {
+    position: relative;
+    width: 100%;
+}
