@@ -6,14 +6,16 @@
     border-radius: 5px;
     font-size: 14px;
     font-weight: 600;
+    -webkit-user-drag: none;
+    overflow: hidden;
 }
 
 .menuItem:hover {
-    transition: background .2s;
-    background:rgba(255, 255, 255, 0.055)
+    transition: background 0.2s;
+    background: rgba(255, 255, 255, 0.055);
 }
 
 .menuItem.active {
     transition: 0s;
-    background: rgba(78, 96, 255, 0.452);
+    background: rgba(var(--accent), 0.452);
 }

@@ -1,12 +1,15 @@
-import Sidebar from '../components/Sidebar'
-import '../styles/globals.css'
+import Sidebar from '../components/Sidebar';
+import { PlayerContextProvider } from '../stores/playerContext';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <Sidebar>
-      <Component {...pageProps} />
-    </Sidebar>
-  )
+    return (
+        <PlayerContextProvider>
+            <Sidebar>
+                <Component {...pageProps} />
+            </Sidebar>
+        </PlayerContextProvider>
+    )
 }
 
 export default MyApp

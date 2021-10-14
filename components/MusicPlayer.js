@@ -1,89 +1,187 @@
 import styles from "../styles/MusicPlayer.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlay, faCirclePause } from "@fortawesome/free-solid-svg-icons";
-import ReactPlayer from "react-player/youtube";
+import {
+    faCirclePlay,
+    faCirclePause,
+    faVolumeLow,
+    faVolumeHigh,
+    faVolumeMute
+} from "@fortawesome/free-solid-svg-icons";
 
-import Image from "next/image";
-import { useState, useEffect } from "react";
+import ReactPlayer from "react-player/youtube";
+import { useState, useEffect, useContext } from "react";
+
+import { PlayerContext } from "../stores/playerContext";
 
 const MusicPlayer = () => {
 
-    const [url, setUrl] = useState("https://www.youtube.com/watch?v=tOZkYsrX8JI");
-    const [playing, setPlay] = useState(false);
+    const {
+        playing,
+        currentSong,
+        setPlaying,
+        played,
+        setPlayed,
+        seeking,
+        setSeeking,
+        globalPlayerReference
+    } = useContext(PlayerContext);
+
     const [volume, setVolume] = useState(0);
-    const [title, setTitle] = useState("Nothing Playing");
-    const [thumbnail, setThumbnail] = useState("/stock.png");
-    const [artist, setArtist] = useState("Unknown");
 
+    const adjustVolume = (percent) => {
+        setVolume(preVolume => Math.min(100, Math.max(0, preVolume + percent)));
+        window.localStorage.getItem("volume")
+    };
+
+    // Initialize the player (volume + keybinds)
     useEffect(() => {
-        // States read values aren't updated here...(workaround)
-        let volumeLocal = parseInt(window.localStorage.getItem("volume"));
-        volumeLocal = volumeLocal > -1 ? volumeLocal : 50;
+        setVolume(Number(window.localStorage.getItem("volume") || "50"));
 
-        setVolume(volumeLocal / 100);
-
-        function changeVolume(percent) {
-            volumeLocal += percent;
-
-            window.localStorage.setItem("volume", volumeLocal);
-            setVolume(volumeLocal / 100);
-        }
-
-        window.addEventListener("keydown", (e) => {
-            if (e.key == "ArrowUp" && volumeLocal < 100) {
-                changeVolume(5);
-            } else if (e.key == "ArrowDown" && volumeLocal > 0) {
-                changeVolume(-5);
+        const handleKeyPress = (e) => {
+            if (e.key == "ArrowUp") {
+                adjustVolume(5);
             }
-        });
+
+            if (e.key == "ArrowDown") {
+                adjustVolume(-5);
+            }
+
+            if (e.key == " ") {
+                togglePlay();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+
+        return () => window.removeEventListener("keydown", handleKeyPress);
     }, []);
 
-    function getVideoDetails() {
-        fetch(`https://www.youtube.com/oembed?url=${url}&format=json`)
-            .then(res => res.json())
-            .then(json => {
-                setTitle(json.title);
-                setThumbnail(json.thumbnail_url);
-                setArtist(json.author_name);
-            })
+    function togglePlay(e) {
+        setPlaying(currentState => !currentState);
     }
+
+    function handleSeekMouseDown() {
+        setSeeking(true);
+    }
+
+    function handleSeekChange(e) {
+        setPlayed(parseFloat(e.target.value));
+    }
+
+    function handleSeekMouseUp(e) {
+        setSeeking(false);
+        globalPlayerReference.current.seekTo(parseFloat(e.target.value));
+    }
+
+    function handleProgress(state) {
+        if (!seeking) {
+            setPlayed(state.played);
+        }
+    }
+
+    function handleVolumeChange(e) {
+        let newVolume = parseInt(e.target.value);
+
+        setVolume(newVolume);
+        window.localStorage.setItem("volume", newVolume);
+    }
+
+
 
     return (
         <div className={styles.player}>
 
             <div className={styles.left}>
-                <img className={styles.thumbnail} src={thumbnail} />
+                <img className={styles.thumbnail} src={currentSong.thumbnail ?? "/stock.png"} alt="album" />
                 <div className={styles.label}>
-                    <span className={styles.title}>{title}</span>
-                    <span className={styles.artist}>{artist}</span>
+                    <span className={styles.title}>
+                        <a href={currentSong.url} target="_blank" rel="noreferrer" className="link">
+                            {currentSong.title ?? "Song!"}
+                        </a>
+                    </span>
+                    <span className={styles.artist}>
+                        {currentSong.artist ?? "Unknown"}
+                    </span>
                 </div>
             </div>
 
             <div className={styles.controls}>
-                <button className={styles.playPause} onClick={function () { setPlay(!playing) }}>
+                <button
+                    className={styles.playPause}
+                    onClick={togglePlay}
+                    onKeyDown={(e) => e.preventDefault()}
+                >
                     <FontAwesomeIcon
-                        icon={
-                            playing ? faCirclePause : faCirclePlay
-                        }
+                        icon={playing ? faCirclePause : faCirclePlay}
                         size="2x"
                     />
                 </button>
+
+                <div className={styles.durationBar}>
+                    <input
+                        className={styles.seek}
+                        type="range" min={0} max={0.999999} step="any"
+                        value={played}
+                        onMouseDown={handleSeekMouseDown}
+                        onChange={handleSeekChange}
+                        onMouseUp={handleSeekMouseUp}
+                        onKeyDown={event => event.preventDefault()}
+                        style={{
+                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 140%)'
+                        }}
+                    />
+                </div>
+
             </div>
 
             <div className={styles.right}>
-                Volume: {Math.floor(volume * 100)}%
+
+                <FontAwesomeIcon
+                    icon={
+                        volume > 0 ?
+                            (volume > 50 ? faVolumeHigh
+                                : faVolumeLow)
+                            : faVolumeMute
+                    }
+                    size="sm"
+                />
+
+                <input
+                    className={styles.volume}
+                    type="range" min={0} max={100} step="any"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                    onKeyDown={event => event.preventDefault()}
+                    style={{
+                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 140%)'
+                    }}
+                />
+
             </div>
 
             <div className={styles.backend}>
                 <ReactPlayer
-                    url={url}
+                    ref={globalPlayerReference}
+                    url={currentSong.url}
                     playing={playing}
                     controls={false}
                     playsinline={false}
                     pip={false}
-                    volume={volume}
-                    onReady={getVideoDetails}
+                    volume={volume / 100}
+                    onProgress={handleProgress}
+                    config={
+                        {
+                            youtube: {
+                                playerVars: {
+                                    autoplay: 0,
+                                    modestbranding: 1,
+                                    showinfo: 0,
+                                    disablekb: 1
+                                }
+                            }
+                        }
+                    }
                 />
             </div>
         </div >
