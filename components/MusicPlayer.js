@@ -1,23 +1,27 @@
 import styles from "../styles/MusicPlayer.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlay, faCirclePause } from "@fortawesome/free-solid-svg-icons";
-import ReactPlayer from "react-player/youtube";
+import {
+    faCirclePlay,
+    faCirclePause,
+    faVolumeLow,
+    faVolumeHigh,
+    faVolumeMute
+} from "@fortawesome/free-solid-svg-icons";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import ReactPlayer from "react-player/youtube";
+import { useState, useEffect, useRef } from "react";
 
 const MusicPlayer = () => {
     const [url, setUrl] = useState("https://www.youtube.com/watch?v=tOZkYsrX8JI");
     const [playing, setPlay] = useState(false);
     const [played, setPlayed] = useState(0);
-
     const [volume, setVolume] = useState(0);
     const [seeking, setSeeking] = useState(false);
-
     const [title, setTitle] = useState("Nothing Playing");
     const [thumbnail, setThumbnail] = useState("/stock.png");
     const [artist, setArtist] = useState("Unknown");
-
     const ref = useRef(null);
 
     const adjustVolume = (percent) => {
@@ -93,7 +97,9 @@ const MusicPlayer = () => {
             <div className={styles.left}>
                 <img className={styles.thumbnail} src={thumbnail} alt="album" />
                 <div className={styles.label}>
-                    <span className={styles.title}>{title}</span>
+                    <span className={styles.title}>
+                        <a href={url} target="_blank" rel="noreferrer" className="link">{title}</a>
+                    </span>
                     <span className={styles.artist}>{artist}</span>
                 </div>
             </div>
@@ -124,6 +130,17 @@ const MusicPlayer = () => {
             </div>
 
             <div className={styles.right}>
+
+                <FontAwesomeIcon
+                    icon={
+                        volume > 0 ?
+                            (volume > 50 ? faVolumeHigh
+                                : faVolumeLow)
+                            : faVolumeMute
+                    }
+                    size="20px"
+                />
+
                 <input
                     className={styles.volume}
                     type="range" min={0} max={100} step="any"
@@ -134,6 +151,7 @@ const MusicPlayer = () => {
                         background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 140%)'
                     }}
                 />
+
             </div>
 
             <div className={styles.backend}>

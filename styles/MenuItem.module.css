@@ -7,11 +7,12 @@
     font-size: 14px;
     font-weight: 600;
     -webkit-user-drag: none;
+    overflow: hidden;
 }
 
 .menuItem:hover {
-    transition: background .2s;
-    background:rgba(255, 255, 255, 0.055)
+    transition: background 0.2s;
+    background: rgba(255, 255, 255, 0.055);
 }
 
 .menuItem.active {

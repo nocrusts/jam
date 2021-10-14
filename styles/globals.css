@@ -21,25 +21,51 @@ nav {
 }
 
 a {
+  position: relative;
   color: inherit;
+  text-decoration: none;
+}
+
+a.link:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  z-index: -99;
+  background: white;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+a.link:hover:after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 * {
   box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   line-height: 1em;
 }
 
 hr {
   display: block;
-  border: 0;
   height: 3px;
+  margin: 20px 0;
+  border: 0;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.055);
-  margin: 20px 0;
 }
 
 .page {
@@ -52,22 +78,22 @@ hr {
 }
 
 input[type="range"] {
-  -webkit-appearance: none;
   height: 4px;
+  -webkit-appearance: none;
   border-radius: 2px;
   cursor: pointer;
-  transition: .2s;
+  transition: 0.2s;
   outline: 0;
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
   width: 0px;
   height: 0px;
+  -webkit-appearance: none;
   border-radius: 50%;
   background: white;
   box-shadow: rgba(0, 0, 0, 0.295) 0 0 15px;
-  transition: .1s;
+  transition: 0.1s;
 }
 
 input[type="range"]:hover {
@@ -75,9 +101,9 @@ input[type="range"]:hover {
 }
 
 input[type="range"]:hover::-webkit-slider-thumb {
-  opacity: 1;
   width: 12px;
   height: 12px;
+  opacity: 1;
 }
 
 :root {

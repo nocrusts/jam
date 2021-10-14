@@ -41,6 +41,7 @@
     border: 1px rgba(255, 255, 255, 0.082) solid;
     object-fit: cover;
     box-shadow: black 0 0 10px;
+    -webkit-user-drag: none;
 }
 
 .controls {
@@ -82,7 +83,12 @@
 .right {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     flex: 1;
+}
+
+.right > *:first-child {
+    margin-right: 5px;
 }
 
 .backend {
