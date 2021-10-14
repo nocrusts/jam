@@ -9,26 +9,32 @@ import {
     faVolumeMute
 } from "@fortawesome/free-solid-svg-icons";
 
-import Link from "next/link";
 import ReactPlayer from "react-player/youtube";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
+
+import { PlayerContext } from "../stores/playerContext";
 
 const MusicPlayer = () => {
-    const [url, setUrl] = useState("https://www.youtube.com/watch?v=tOZkYsrX8JI");
-    const [playing, setPlay] = useState(false);
-    const [played, setPlayed] = useState(0);
+
+    const {
+        playing,
+        currentSong,
+        setPlaying,
+        played,
+        setPlayed,
+        seeking,
+        setSeeking,
+        globalPlayerReference
+    } = useContext(PlayerContext);
+
     const [volume, setVolume] = useState(0);
-    const [seeking, setSeeking] = useState(false);
-    const [title, setTitle] = useState("Nothing Playing");
-    const [thumbnail, setThumbnail] = useState("/stock.png");
-    const [artist, setArtist] = useState("Unknown");
-    const ref = useRef(null);
 
     const adjustVolume = (percent) => {
         setVolume(preVolume => Math.min(100, Math.max(0, preVolume + percent)));
         window.localStorage.getItem("volume")
     };
 
+    // Initialize the player (volume + keybinds)
     useEffect(() => {
         setVolume(Number(window.localStorage.getItem("volume") || "50"));
 
@@ -52,7 +58,7 @@ const MusicPlayer = () => {
     }, []);
 
     function togglePlay(e) {
-        setPlay(currentState => !currentState);
+        setPlaying(currentState => !currentState);
     }
 
     function handleSeekMouseDown() {
@@ -65,7 +71,7 @@ const MusicPlayer = () => {
 
     function handleSeekMouseUp(e) {
         setSeeking(false);
-        ref.current.seekTo(parseFloat(e.target.value));
+        globalPlayerReference.current.seekTo(parseFloat(e.target.value));
     }
 
     function handleProgress(state) {
@@ -81,26 +87,22 @@ const MusicPlayer = () => {
         window.localStorage.setItem("volume", newVolume);
     }
 
-    function getVideoDetails() {
-        fetch(`https://www.youtube.com/oembed?url=${url}&format=json`)
-            .then(res => res.json())
-            .then(json => {
-                setTitle(json.title);
-                setThumbnail(json.thumbnail_url);
-                setArtist(json.author_name);
-            });
-    }
+
 
     return (
         <div className={styles.player}>
 
             <div className={styles.left}>
-                <img className={styles.thumbnail} src={thumbnail} alt="album" />
+                <img className={styles.thumbnail} src={currentSong.thumbnail ?? "/stock.png"} alt="album" />
                 <div className={styles.label}>
                     <span className={styles.title}>
-                        <a href={url} target="_blank" rel="noreferrer" className="link">{title}</a>
+                        <a href={currentSong.url} target="_blank" rel="noreferrer" className="link">
+                            {currentSong.title ?? "Song!"}
+                        </a>
                     </span>
-                    <span className={styles.artist}>{artist}</span>
+                    <span className={styles.artist}>
+                        {currentSong.artist ?? "Unknown"}
+                    </span>
                 </div>
             </div>
 
@@ -115,18 +117,22 @@ const MusicPlayer = () => {
                         size="2x"
                     />
                 </button>
-                <input
-                    className={styles.seek}
-                    type="range" min={0} max={0.999999} step="any"
-                    value={played}
-                    onMouseDown={handleSeekMouseDown}
-                    onChange={handleSeekChange}
-                    onMouseUp={handleSeekMouseUp}
-                    onKeyDown={event => event.preventDefault()}
-                    style={{
-                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 140%)'
-                    }}
-                />
+
+                <div className={styles.durationBar}>
+                    <input
+                        className={styles.seek}
+                        type="range" min={0} max={0.999999} step="any"
+                        value={played}
+                        onMouseDown={handleSeekMouseDown}
+                        onChange={handleSeekChange}
+                        onMouseUp={handleSeekMouseUp}
+                        onKeyDown={event => event.preventDefault()}
+                        style={{
+                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 140%)'
+                        }}
+                    />
+                </div>
+
             </div>
 
             <div className={styles.right}>
@@ -138,7 +144,7 @@ const MusicPlayer = () => {
                                 : faVolumeLow)
                             : faVolumeMute
                     }
-                    size="20px"
+                    size="sm"
                 />
 
                 <input
@@ -156,14 +162,13 @@ const MusicPlayer = () => {
 
             <div className={styles.backend}>
                 <ReactPlayer
-                    ref={ref}
-                    url={url}
+                    ref={globalPlayerReference}
+                    url={currentSong.url}
                     playing={playing}
                     controls={false}
                     playsinline={false}
                     pip={false}
                     volume={volume / 100}
-                    onReady={getVideoDetails}
                     onProgress={handleProgress}
                     config={
                         {

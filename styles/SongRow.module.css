@@ -1,0 +1,35 @@
+.songRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 7px;
+}
+
+.songRow img {
+    margin: 10px;
+    object-fit: cover;
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+}
+
+.index {
+    text-align: center;
+    width: 60px;
+    padding-left: 10px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+}
+
+.songRow:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
