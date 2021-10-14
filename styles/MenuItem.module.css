@@ -6,6 +6,7 @@
     border-radius: 5px;
     font-size: 14px;
     font-weight: 600;
+    -webkit-user-drag: none;
 }
 
 .menuItem:hover {
