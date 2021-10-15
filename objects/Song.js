@@ -1,7 +1,35 @@
 
 // SwiftUI > React smh
 class Song {
+
+    static store(song) {
+        if (typeof window !== "undefined") {
+            if (song.url.startsWith("https://")) {
+                window.localStorage.setItem(song.url, JSON.stringify(song));
+            }
+        }
+    }
+
     static async create(inputURL) {
+
+        if (!inputURL) {
+            return {
+                title: "Song!",
+                thumbnail: "/stock.png",
+                artist: "Unknown",
+                url: "",
+                dummy: true
+            }
+        }
+
+        if (typeof window !== "undefined") {
+            const cached = window.localStorage.getItem(inputURL);
+            const object = JSON.parse(cached);
+            if (cached && object) {
+                return object;
+            }
+        }
+
         const url = `https://www.youtube.com/oembed?url=${inputURL}&format=json`;
         const res = await fetch(url);
         const json = await res.json();
@@ -23,14 +51,19 @@ class Song {
                 .replace("(Official Video)", "")
                 .replace("(Lyric Video)", "")
                 .replace("[Official Music Video]", "")
+                .replace(" | lyrics", "")
         );
 
-        return {
+        const song = {
             title: smallerTitle,
             thumbnail: json.thumbnail_url,
             artist: noVEVO,
             url: inputURL
         }
+
+        Song.store(song);
+
+        return song;
     }
 }
 

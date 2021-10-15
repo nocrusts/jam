@@ -15,8 +15,8 @@
 }
 
 .left {
-    max-width: 30%;
     display: flex;
+    max-width: 30%;
     align-items: center;
     flex: 1;
     overflow: hidden;
@@ -24,6 +24,7 @@
 
 .label {
     display: flex;
+    width: 100%;
     flex-direction: column;
     margin-left: 20px;
 }
@@ -32,43 +33,77 @@
     white-space: nowrap;
     font-size: 13px;
     font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .artist {
+    white-space: nowrap;
     opacity: 0.5;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .thumbnail {
+    display: flex;
     width: 55px;
     height: 55px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
     border: 1px rgba(255, 255, 255, 0.082) solid;
-    object-fit: cover;
+    overflow: hidden;
     box-shadow: black 0 5px 25px;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.thumbnail img {
+    width: 135%;
+    height: 135%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     -webkit-user-drag: none;
 }
 
 .controls {
     display: flex;
+    height: 100%;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
     flex: 2;
-    height: 100%;
 }
 
 .durationBar {
     display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.durationBar > span {
+    font-size: 12px;
+    opacity: 0.8;
+    user-select: none;
 }
 
 .seek {
-    width: 90%;
+    width: calc(100% - 20px);
     max-width: 580px;
+    margin: 0 10px;
 }
 
-.playPause {
+.controlButtons {
+    margin: 0 5px;
     color: white;
     background: transparent;
     outline: 0;
@@ -78,21 +113,21 @@
     cursor: pointer;
 }
 
-.playPause path {
+.controlButtons path {
     transition: 0.15s ease-out;
 }
 
-.playPause:hover path {
+.controlButtons:hover path {
     fill: rgba(255, 255, 255, 0.7);
 }
 
-.playPause:active {
+.controlButtons:active {
     transform: scale(1.15);
 }
 
 .right {
-    max-width: 30%;
     display: flex;
+    max-width: 30%;
     justify-content: flex-end;
     align-items: center;
     flex: 1;

@@ -6,7 +6,9 @@ import {
     faCirclePause,
     faVolumeLow,
     faVolumeHigh,
-    faVolumeMute
+    faVolumeMute,
+    faForward,
+    faBackward
 } from "@fortawesome/free-solid-svg-icons";
 
 import ReactPlayer from "react-player/youtube";
@@ -24,10 +26,14 @@ const MusicPlayer = () => {
         setPlayed,
         seeking,
         setSeeking,
-        globalPlayerReference
+        globalPlayerReference,
+        nextSong,
+        previousSong
     } = useContext(PlayerContext);
 
     const [volume, setVolume] = useState(0);
+    const [time, setTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
     const adjustVolume = (percent) => {
         setVolume(preVolume => Math.min(100, Math.max(0, preVolume + percent)));
@@ -67,6 +73,7 @@ const MusicPlayer = () => {
 
     function handleSeekChange(e) {
         setPlayed(parseFloat(e.target.value));
+        setTime(Math.floor(parseFloat(e.target.value) * duration));
     }
 
     function handleSeekMouseUp(e) {
@@ -77,6 +84,13 @@ const MusicPlayer = () => {
     function handleProgress(state) {
         if (!seeking) {
             setPlayed(state.played);
+            setTime(Math.floor(
+                globalPlayerReference.current.getCurrentTime()
+            ));
+
+            setDuration(Math.floor(
+                globalPlayerReference.current.getDuration()
+            ));
         }
     }
 
@@ -87,13 +101,13 @@ const MusicPlayer = () => {
         window.localStorage.setItem("volume", newVolume);
     }
 
-
-
     return (
         <div className={styles.player}>
-
             <div className={styles.left}>
-                <img className={styles.thumbnail} src={currentSong.thumbnail ?? "/stock.png"} alt="album" />
+                <div className={styles.thumbnail}>
+                    <img src={currentSong.thumbnail ?? "/stock.png"} alt="album" />
+                </div>
+
                 <div className={styles.label}>
                     <span className={styles.title}>
                         <a href={currentSong.url} target="_blank" rel="noreferrer" className="link">
@@ -107,18 +121,47 @@ const MusicPlayer = () => {
             </div>
 
             <div className={styles.controls}>
-                <button
-                    className={styles.playPause}
-                    onClick={togglePlay}
-                    onKeyDown={(e) => e.preventDefault()}
-                >
-                    <FontAwesomeIcon
-                        icon={playing ? faCirclePause : faCirclePlay}
-                        size="2x"
-                    />
-                </button>
+                <span className="center-row">
+                    <button
+                        className={styles.controlButtons}
+                        onClick={previousSong}
+                        onKeyDown={(e) => e.preventDefault()}
+                    >
+                        <FontAwesomeIcon
+                            icon={faBackward}
+                            size="1x"
+                        />
+                    </button>
+
+                    <button
+                        className={styles.controlButtons}
+                        onClick={togglePlay}
+                        onKeyDown={(e) => e.preventDefault()}
+                    >
+                        <FontAwesomeIcon
+                            icon={playing ? faCirclePause : faCirclePlay}
+                            size="2x"
+                        />
+                    </button>
+
+                    <button
+                        className={styles.controlButtons}
+                        onClick={nextSong}
+                        onKeyDown={(e) => e.preventDefault()}
+                    >
+                        <FontAwesomeIcon
+                            icon={faForward}
+                            size="1x"
+                        />
+                    </button>
+                </span>
+
 
                 <div className={styles.durationBar}>
+                    <span>{
+                        currentSong.dummy ? "--:--" :
+                            Math.floor(time / 60) + ":" + (time % 60 < 10 ? "0" : "") + time % 60
+                    }</span>
                     <input
                         className={styles.seek}
                         type="range" min={0} max={0.999999} step="any"
@@ -128,12 +171,16 @@ const MusicPlayer = () => {
                         onMouseUp={handleSeekMouseUp}
                         onKeyDown={event => event.preventDefault()}
                         style={{
-                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 140%)'
+                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 110%)'
                         }}
                     />
+                    <span>-{
+                        currentSong.dummy ? "--:--" :
+                            Math.floor((duration - time) / 60) + ":" + ((duration - time) % 60 < 10 ? "0" : "") + (duration - time) % 60
+                    }</span>
                 </div>
 
-            </div>
+            </div >
 
             <div className={styles.right}>
 
@@ -154,7 +201,7 @@ const MusicPlayer = () => {
                     onChange={handleVolumeChange}
                     onKeyDown={event => event.preventDefault()}
                     style={{
-                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 140%)'
+                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 110%)'
                     }}
                 />
 
@@ -164,11 +211,14 @@ const MusicPlayer = () => {
                 <ReactPlayer
                     ref={globalPlayerReference}
                     url={currentSong.url}
+                    width={0}
+                    height={0}
                     playing={playing}
                     controls={false}
                     playsinline={false}
                     pip={false}
                     volume={volume / 100}
+                    onEnded={() => nextSong()}
                     onProgress={handleProgress}
                     config={
                         {

@@ -120,6 +120,36 @@ input[type="range"]:hover::-webkit-slider-thumb {
   opacity: 1;
 }
 
+.btn {
+  display: inline-block;
+  padding: 7px 12px;
+  outline: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 2px solid rgba(var(--accent), 0.5);
+}
+
+.btn:hover {
+  color: white;
+  background: rgb(var(--accent));
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.center-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 :root {
   --sidebar-width: 260px;
   --accent: 78, 96, 255;
