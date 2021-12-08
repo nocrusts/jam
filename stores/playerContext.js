@@ -28,9 +28,14 @@ const PlayerContextProvider = ({ children }) => {
     }
 
     const addToQueue = async (song) => {
+        console.log("Queueing song: ", song);
+        console.log("Current Playing:", currentSong)
+        console.log("Queue:", queue);
+
+        // If the last song is not the same as the song we are trying to queue, add it to the queue
         if (queue[queue.length - 1]?.url != song.url) {
             setQueue(current => [...current, song]);
-            if (currentSong.dummy) {
+            if ((await currentSong).dummy) {
                 setCurrentSong(song);
                 setPlaying(true);
             }

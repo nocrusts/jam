@@ -171,7 +171,7 @@ const MusicPlayer = () => {
                         onMouseUp={handleSeekMouseUp}
                         onKeyDown={event => event.preventDefault()}
                         style={{
-                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 110%)'
+                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 300%)'
                         }}
                     />
                     <span>-{
@@ -201,7 +201,7 @@ const MusicPlayer = () => {
                     onChange={handleVolumeChange}
                     onKeyDown={event => event.preventDefault()}
                     style={{
-                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 110%)'
+                        background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + volume + '%, rgba(255, 255, 255, 0.1) ' + volume + '%, transparent 300%)'
                     }}
                 />
 

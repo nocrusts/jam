@@ -1,24 +1,16 @@
 .search {
     position: relative;
+    margin: 40px 0;
     font-weight: 400;
     font-size: 13px;
     line-height: 1.23077;
     vertical-align: top;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
     -webkit-user-drag: none;
-    margin: 40px 0;
 }
 
 .input {
     width: 100%;
     height: 32px;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
     vertical-align: top;
     padding-top: 6px;
     padding-bottom: 5px;
