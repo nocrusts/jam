@@ -2,9 +2,6 @@ import styles from "../styles/Sidebar.module.css";
 import MenuItem from "./MenuItem";
 import MusicPlayer from "./MusicPlayer";
 import SearchBar from "./Searchbar";
-import { PlayerContext } from "../stores/playerContext";
-import { useEffect, useContext } from "react";
-
 
 const Sidebar = ({ children }) => {
     return (

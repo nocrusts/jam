@@ -16,7 +16,7 @@
     transform: translateX(10px)
 }
 
-.songRow svg {
+.songRow .index>svg {
     display: none;
 }
 

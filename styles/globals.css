@@ -89,6 +89,7 @@ hr {
 /* Container for content */
 .container {
   padding: 0 40px;
+  padding-bottom: 200px;
 }
 
 /* Heading styles */
@@ -134,7 +135,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   color: rgba(255, 255, 255, 0.8);
   border-radius: 999px;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;

@@ -10,14 +10,17 @@ class Song {
         }
     }
 
-    static async create(inputURL) {
+    static async create(videoID, from = "?") {
+        console.log("Creating from", from + ":", videoID)
 
-        if (!inputURL) {
+        const inputURL = "https://youtube.com/watch?v=" + videoID;
+
+        if (videoID === undefined) {
             return {
                 title: "Song!",
                 thumbnail: "/stock.png",
                 artist: "Unknown",
-                url: "",
+                url: from + " " + videoID,
                 dummy: true
             }
         }

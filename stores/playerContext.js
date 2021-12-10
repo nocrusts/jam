@@ -4,19 +4,23 @@ import Song from "../objects/Song";
 const PlayerContext = createContext();
 
 const PlayerContextProvider = ({ children }) => {
-    const [playing, setPlaying] = useState(false);
-    const [currentSong, setCurrentSong] = useState(Song.create());
-    const [played, setPlayed] = useState(0);
-    const [seeking, setSeeking] = useState(false);
+    const [playing, setPlaying] = useState(false); // true if song is playing
+    const [currentSong, setCurrentSong] = useState({}); // current song
+    const [played, setPlayed] = useState(0); // Progress in seconds
+    const [seeking, setSeeking] = useState(false); // true if seeking
+    const [queue, setQueue] = useState([]); // Queue of songs
+    const [queueIndex, setQueueIndex] = useState(0); // Index of current song in queue
 
-    // Queue related states
-    const [queue, setQueue] = useState([]);
-    const [queueIndex, setQueueIndex] = useState(0);
+    const globalPlayerReference = useRef(null); // Reference to global player
 
-    const globalPlayerReference = useRef(null);
 
     const nextSong = async () => {
-        setQueueIndex(current => Math.min(current + 1, queue.length));
+        if (await queueIndex + 1 == queue.length) {
+            setCurrentSong(Song.create(undefined, "playerContext"));
+            setPlayed(0);
+        }
+
+        setQueueIndex(current => current + 1);
     }
 
     const previousSong = async () => {
@@ -28,12 +32,8 @@ const PlayerContextProvider = ({ children }) => {
     }
 
     const addToQueue = async (song) => {
-        console.log("Queueing song: ", song);
-        console.log("Current Playing:", currentSong)
-        console.log("Queue:", queue);
-
         // If the last song is not the same as the song we are trying to queue, add it to the queue
-        if (queue[queue.length - 1]?.url != song.url) {
+        if (!song.dummy && queue[queue.length - 1]?.url != song.url) {
             setQueue(current => [...current, song]);
             if ((await currentSong).dummy) {
                 setCurrentSong(song);
@@ -48,12 +48,11 @@ const PlayerContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (queueIndex >= queue.length || queueIndex < 0) {
-            setCurrentSong(Song.create());
+            setCurrentSong(Song.create(undefined, "playerContext"));
         }
 
         else if (queue.length > 0) {
             setCurrentSong(queue[queueIndex]);
-            console.log("set song to", queue[queueIndex])
         }
     }, [queueIndex]);
 

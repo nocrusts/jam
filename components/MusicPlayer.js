@@ -1,15 +1,17 @@
 import styles from "../styles/MusicPlayer.module.css";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faCirclePlay,
-    faCirclePause,
-    faVolumeLow,
-    faVolumeHigh,
-    faVolumeMute,
-    faForward,
-    faBackward
-} from "@fortawesome/free-solid-svg-icons";
+    FaVolumeUp as HighVolume,
+    FaVolumeMute as MuteVolume,
+    FaVolumeDown as LowVolume
+} from "react-icons/fa";
+
+import {
+    HiPlay as PlayIcon,
+    HiPause as PauseIcon,
+    HiFastForward as FastForwardIcon,
+    HiRewind as FastBackwardIcon,
+} from "react-icons/hi"
 
 import ReactPlayer from "react-player/youtube";
 import { useState, useEffect, useContext } from "react";
@@ -53,7 +55,7 @@ const MusicPlayer = () => {
                 adjustVolume(-5);
             }
 
-            if (e.key == " ") {
+            if (e.key == " " && document.activeElement.tagName != "INPUT") {
                 togglePlay();
             }
         };
@@ -127,10 +129,7 @@ const MusicPlayer = () => {
                         onClick={previousSong}
                         onKeyDown={(e) => e.preventDefault()}
                     >
-                        <FontAwesomeIcon
-                            icon={faBackward}
-                            size="1x"
-                        />
+                        <FastBackwardIcon size="1.3em" opacity={.85} />
                     </button>
 
                     <button
@@ -138,10 +137,9 @@ const MusicPlayer = () => {
                         onClick={togglePlay}
                         onKeyDown={(e) => e.preventDefault()}
                     >
-                        <FontAwesomeIcon
-                            icon={playing ? faCirclePause : faCirclePlay}
-                            size="2x"
-                        />
+                        {
+                            playing ? <PauseIcon size="2em" /> : <PlayIcon size="2em" />
+                        }
                     </button>
 
                     <button
@@ -149,10 +147,7 @@ const MusicPlayer = () => {
                         onClick={nextSong}
                         onKeyDown={(e) => e.preventDefault()}
                     >
-                        <FontAwesomeIcon
-                            icon={faForward}
-                            size="1x"
-                        />
+                        <FastForwardIcon size="1.3em" opacity={.85} />
                     </button>
                 </span>
 
@@ -183,16 +178,12 @@ const MusicPlayer = () => {
             </div >
 
             <div className={styles.right}>
-
-                <FontAwesomeIcon
-                    icon={
-                        volume > 0 ?
-                            (volume > 50 ? faVolumeHigh
-                                : faVolumeLow)
-                            : faVolumeMute
-                    }
-                    size="sm"
-                />
+                {
+                    volume > 0 ?
+                        (volume > 50 ? <HighVolume />
+                            : <LowVolume />)
+                        : <MuteVolume />
+                }
 
                 <input
                     className={styles.volume}
