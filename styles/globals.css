@@ -91,6 +91,12 @@ hr {
   padding: 0 40px;
 }
 
+/* Heading styles */
+
+.heading {
+  margin-bottom: 20px;
+}
+
 input[type="range"] {
   height: 4px;
   -webkit-appearance: none;
