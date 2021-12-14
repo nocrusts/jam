@@ -5,7 +5,7 @@ import styles from "../styles/Searchbar.module.css";
 const SearchBar = (params) => {
 
     const keyPressHandle = (event) => {
-        if (event.key === "Enter" && event.target.value !== "") {
+        if (event.key === "Enter" && event.target.value.trim() !== "") {
             Router.push({ pathname: '/search', query: { q: event.target.value } });
         }
     }

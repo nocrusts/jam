@@ -166,12 +166,14 @@ const MusicPlayer = () => {
                         onMouseUp={handleSeekMouseUp}
                         onKeyDown={event => event.preventDefault()}
                         style={{
-                            background: 'linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ' + played * 100 + '%, rgba(255, 255, 255, 0.1) ' + played * 100 + '%, transparent 300%)'
+                            background: `linear-gradient(to right, rgb(var(--accent)) 0%, rgb(var(--accent)) ` +
+                                played * 100 + '%, rgba(255, 255, 255, 0.1) ' +
+                                (currentSong.dummy ? 0 : 1) * played * 100 + '%, transparent 300%)'
                         }}
                     />
-                    <span>-{
+                    <span>{
                         currentSong.dummy ? "--:--" :
-                            Math.floor((duration - time) / 60) + ":" + ((duration - time) % 60 < 10 ? "0" : "") + (duration - time) % 60
+                            "-" + Math.floor((duration - time) / 60) + ":" + ((duration - time) % 60 < 10 ? "0" : "") + (duration - time) % 60
                     }</span>
                 </div>
 

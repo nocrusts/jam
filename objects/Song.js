@@ -10,7 +10,7 @@ class Song {
         }
     }
 
-    static async create(videoID, from = "?") {
+    static create(videoID, from = "?") {
         console.log("Creating from", from + ":", videoID)
 
         const inputURL = "https://youtube.com/watch?v=" + videoID;
@@ -33,40 +33,45 @@ class Song {
             }
         }
 
-        const url = `https://www.youtube.com/oembed?url=${inputURL}&format=json`;
-        const res = await fetch(url);
-        const json = await res.json();
+        // Return promise here if not a dummy
 
-        let noVEVO = json.author_name
-            .replace("VEVO", "")
-            .replace(" - Topic", "");
+        return new Promise(async (resolve, reject) => {
+            const url = `https://www.youtube.com/oembed?url=${inputURL}&format=json`;
+            const res = await fetch(url);
+            const json = await res.json();
 
-        let smallerTitle = (
-            json.title
-                .replace(`${json.author_name} - `, "")
-                .replace(`- ${json.author_name}`, "")
-                .replace(`${noVEVO} - `, "")
-                .replace(`- ${noVEVO}`, "")
-                .replace("(Official Music Video)", "")
-                .replace("(Official Audio)", "")
-                .replace("(Audio)", "")
-                .replace("(Video)", "")
-                .replace("(Official Video)", "")
-                .replace("(Lyric Video)", "")
-                .replace("[Official Music Video]", "")
-                .replace(" | lyrics", "")
-        );
+            let noVEVO = json.author_name
+                .replace("VEVO", "")
+                .replace(" - Topic", "");
 
-        const song = {
-            title: smallerTitle,
-            thumbnail: json.thumbnail_url,
-            artist: noVEVO,
-            url: inputURL
-        }
+            let smallerTitle = (
+                json.title
+                    .replace(`${json.author_name} - `, "")
+                    .replace(`- ${json.author_name}`, "")
+                    .replace(`${noVEVO} - `, "")
+                    .replace(`- ${noVEVO}`, "")
+                    .replace("(Official Music Video)", "")
+                    .replace("(Official Audio)", "")
+                    .replace("(Audio)", "")
+                    .replace("(Video)", "")
+                    .replace("(Official Video)", "")
+                    .replace("(Lyric Video)", "")
+                    .replace("[Official Music Video]", "")
+                    .replace(" | lyrics", "")
+            );
 
-        Song.store(song);
+            const song = {
+                title: smallerTitle,
+                thumbnail: json.thumbnail_url,
+                artist: noVEVO,
+                url: inputURL,
+                dummy: false
+            }
 
-        return song;
+            Song.store(song);
+
+            resolve(song);
+        })
     }
 }
 
